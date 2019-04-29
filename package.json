@@ -1,0 +1,18 @@
+{
+  "name": "tms",
+  "version": "1.0.0",
+  "description": "Theater Manage",
+  "main": "index.js",
+  "dependencies": {
+    "@ng-bootstrap/ng-bootstrap": "^4.1.1",
+    "global": "^4.3.2",
+    "ionic": "^4.12.0",
+    "phonegap": "^8.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "tmsss"
+  },
+  "author": "wyl",
+  "license": "ISC"
+}
