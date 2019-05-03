@@ -11,5 +11,9 @@ public interface TheaterInfoService extends IService<TheaterInfo> {
 
     Object getArrangementList(Integer pageNo, Integer pageSize, Integer theaterId, Integer filmId);
 
-    Object getHallByArrangementId(Integer arrangementId);
+    Object getHallByFilmId(Integer filmId);
+
+    Object getArrangementDate(Integer pageNo, Integer pageSize, Integer theaterId, Integer filmId);
+
+    Object getTheaterDetail(Integer theaterId);
 }

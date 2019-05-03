@@ -1,9 +1,13 @@
 package com.wyl.tms.controller;
 
 import com.wyl.tms.service.GoodsInfoService;
+import com.wyl.tms.vo.CartInfo;
+import com.wyl.tms.vo.CartItem;
 import com.wyl.tms.vo.GoodsOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by Yhw on 2019-04-23
@@ -43,7 +47,26 @@ public class GoodsInfoController {
     @GetMapping("/order/list")
     public Object getOrderList(@RequestHeader("user_id") Integer userId,
                                @RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
-                               @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize) {
-        return goodsInfoService.getOrderList(userId, pageNo, pageSize);
+                               @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
+                               @RequestParam(name = "status") Integer status) {
+        return goodsInfoService.getOrderList(userId, pageNo, pageSize, status);
+    }
+
+    /**
+     * 查看商品订单的详情
+     */
+    @GetMapping("/order/{id}/detail")
+    public Object getOrderDetail(@PathVariable(name = "id") Integer orderId) {
+        return goodsInfoService.getOrderDetail(orderId);
+    }
+
+    /**
+     * 结算商品购物车
+     */
+    @PostMapping("/order/checkout")
+    public Object checkoutOrder(@RequestHeader(value = "userId", defaultValue = "1") Integer userId,
+                                @RequestHeader(value = "theaterId", defaultValue = "1") Integer theaterId,
+                                @RequestBody CartInfo cartInfo) {
+        return goodsInfoService.checkoutOrder(userId, theaterId, cartInfo);
     }
 }
