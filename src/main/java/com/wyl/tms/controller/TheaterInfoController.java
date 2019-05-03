@@ -31,19 +31,39 @@ public class TheaterInfoController {
     /**
      * 查看电影排片信息列表
      */
-    @GetMapping("/arrangement/list")
-    public Object getArrangementList(@RequestParam(name = "theater_id") Integer theaterId,
-                              @RequestParam(name = "film_id") Integer filmId,
-                              @RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
-                              @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize) {
+    @GetMapping("/arrangement/{id}/list")
+    public Object getArrangementList(@RequestParam(name = "theater_id", defaultValue = "1") Integer theaterId,
+                                     @PathVariable(name = "id") Integer filmId,
+                                     @RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
+                                     @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize) {
         return theaterInfoService.getArrangementList(pageNo, pageSize, theaterId, filmId);
+    }
+
+    /**
+     * 获取电影放映日期
+     */
+    @GetMapping("/arrangement/{id}/date")
+    public Object getArrangementDate(@RequestParam(name = "theater_id", defaultValue = "1") Integer theaterId,
+                                     @PathVariable(name = "id") Integer filmId,
+                                     @RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
+                                     @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize) {
+        return theaterInfoService.getArrangementDate(pageNo, pageSize, theaterId, filmId);
     }
 
     /**
      * 根据电影id,查看影厅信息
      */
-    @GetMapping("/film/{id}/hall")
-    public Object getHallByFilmId(@PathVariable(name = "id") Integer arrangementId) {
-        return theaterInfoService.getHallByArrangementId(arrangementId);
+    @GetMapping("/hall/{id}/list")
+    public Object getHallByFilmId(@PathVariable(name = "id") Integer filmId) {
+        return theaterInfoService.getHallByFilmId(filmId);
+    }
+
+    /**
+     * 获取影院详情
+     */
+    @GetMapping("/{id}/detail")
+    public Object getTheaterDetail(@PathVariable(name = "id") Integer theaterId) {
+        return theaterInfoService.getTheaterDetail(theaterId);
+
     }
 }
