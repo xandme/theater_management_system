@@ -8,4 +8,8 @@ import com.wyl.tms.model.FilmInfo;
  */
 public interface FilmInfoService extends IService<FilmInfo> {
     Object getList(Integer pageNo, Integer pageSize,Integer status);
+
+    Object getOrderList(Integer userId, Integer pageNo, Integer pageSize, Integer status);
+
+    Object getFilmDetail(Integer id);
 }

@@ -5,20 +5,23 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.wyl.tms.common.DataList;
 import com.wyl.tms.common.ExtraResponse;
-import com.wyl.tms.dao.FilmArrangementMapper;
-import com.wyl.tms.dao.FilmHallInfoMapper;
-import com.wyl.tms.dao.TheaterInfoMapper;
+import com.wyl.tms.common.SeatConst;
+import com.wyl.tms.common.SeatStatusEnum;
+import com.wyl.tms.dao.*;
 import com.wyl.tms.model.FilmArrangement;
-import com.wyl.tms.model.FilmHallInfo;
+import com.wyl.tms.model.SeatInfo;
+import com.wyl.tms.model.SeatSelectionSituation;
 import com.wyl.tms.model.TheaterInfo;
 import com.wyl.tms.service.TheaterInfoService;
+import com.wyl.tms.vo.ArrangementDateVO;
+import com.wyl.tms.vo.FilmHallVO;
+import com.wyl.tms.vo.SeatChartVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Yhw on 2019-04-23
@@ -31,11 +34,17 @@ public class TheaterInfoServiceImpl extends ServiceImpl<TheaterInfoMapper, Theat
 
     private final FilmHallInfoMapper filmHallInfoMapper;
 
+    private final SeatSelectionSituationMapper situationMapper;
+
+    private final SeatInfoMapper seatInfoMapper;
+
     @Autowired
-    public TheaterInfoServiceImpl(TheaterInfoMapper theaterInfoMapper, FilmArrangementMapper filmArrangementMapper, FilmHallInfoMapper filmHallInfoMapper) {
+    public TheaterInfoServiceImpl(TheaterInfoMapper theaterInfoMapper, FilmArrangementMapper filmArrangementMapper, FilmHallInfoMapper filmHallInfoMapper, SeatSelectionSituationMapper situationMapper, SeatInfoMapper seatInfoMapper) {
         this.theaterInfoMapper = theaterInfoMapper;
         this.filmArrangementMapper = filmArrangementMapper;
         this.filmHallInfoMapper = filmHallInfoMapper;
+        this.situationMapper = situationMapper;
+        this.seatInfoMapper = seatInfoMapper;
     }
 
     @Override
@@ -55,44 +64,99 @@ public class TheaterInfoServiceImpl extends ServiceImpl<TheaterInfoMapper, Theat
     }
 
     @Override
-    public Object getHallByFilmId(Integer filmId) {
-        EntityWrapper entityWrapper = new EntityWrapper();
-        entityWrapper.eq("film_id", filmId);
-        List<FilmArrangement> filmArrangementList = filmArrangementMapper.selectList(entityWrapper);
-        List<Integer> hallIdList = filmArrangementList.stream().map(filmArrangement -> filmArrangement.getFilmHallNumber()).collect(Collectors.toList());
-
-//        FilmHallInfo filmHallInfo = new FilmHallInfo();
-//        if (filmHallInfoList.size() > 0) {
-//            filmHallInfo = filmHallInfoList.get(0);
-//        }
-        List<Date> dateList = filmArrangementMapper.selectDistinctDate(filmId);
-        Map<String, List<FilmArrangement>> map = new HashMap<>();
-        for (Date date : dateList) {
-            List<FilmArrangement> list = new ArrayList<>();
-            for (FilmArrangement filmArrangement : filmArrangementList) {
-                if (date.compareTo(filmArrangement.getDate()) == 0) {
-                    list.add(filmArrangement);
-                }
-            }
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd");
-            String dateStr = sdf.format(date);
-            map.put(dateStr, list);
-        }
-        return new ExtraResponse(map);
-    }
-
-    @Override
     public Object getArrangementDate(Integer pageNo, Integer pageSize, Integer theaterId, Integer filmId) {
-        EntityWrapper entityWrapper = new EntityWrapper();
-        entityWrapper.eq("film_id", filmId);
-//        entityWrapper.ge("date", new Date());
-        List<FilmArrangement> filmArrangementList = filmArrangementMapper.selectList(entityWrapper);
-        return new ExtraResponse(filmArrangementList);
+        List<Date> dateList = filmArrangementMapper.selectDistinctDate(filmId);
+        List<ArrangementDateVO> dateVOList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("M月d日");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("YYYY-MM-dd");
+        for (Date date : dateList) {
+            String formatDate = sdf.format(date);
+            String dateStr = sdf1.format(date);
+            dateVOList.add(new ArrangementDateVO(dateStr, formatDate));
+
+        }
+        return new ExtraResponse(dateVOList);
     }
 
     @Override
     public Object getTheaterDetail(Integer theaterId) {
         TheaterInfo theaterInfo = theaterInfoMapper.selectById(theaterId);
         return new ExtraResponse(theaterInfo);
+    }
+
+    @Override
+    public Object getFilmHallList(Integer filmId, String date) {
+        List<FilmHallVO> filmHallVOList = filmArrangementMapper.selectFilmHall(filmId, date);
+        return new ExtraResponse(filmHallVOList);
+    }
+
+    private final static String SEAT_MARK = "c";
+    private final static String PASSAGE_MARK = "_";
+
+    @Override
+    public Object getArrangementHallSeat(Integer arrangementId, Integer hallId) {
+        EntityWrapper entityWrapper = new EntityWrapper();
+        entityWrapper.eq("film_hall_number", hallId);
+        List<SeatInfo> seatInfoList = seatInfoMapper.selectList(entityWrapper);
+        EntityWrapper entityWrapper1 = new EntityWrapper();
+        entityWrapper1.eq("arrangement_id", arrangementId);
+        List<SeatSelectionSituation> situationList = situationMapper.selectList(entityWrapper1);
+        List<String> unavailableSeatList = new ArrayList<>();
+
+        //将同行的位置分组存放
+        Map<Integer, Map<Integer, SeatInfo>> seatInfoMap = new HashMap<>();
+        for (SeatInfo seatInfo : seatInfoList) {
+            seatInfo.setStatus(SeatStatusEnum.AVAILABLE.name());
+            if (!seatInfo.getIsEnabled()) {
+                seatInfo.setStatus(SeatStatusEnum.UNAVAILABLE.name());
+            }
+            for (SeatSelectionSituation situation : situationList) {
+                if (situation.getSeatId().equals(seatInfo.getSeatId())) {
+                    StringBuffer sb = new StringBuffer();
+                    sb.append(seatInfo.getSeatRow()).append("_").append(seatInfo.getSeatColumn());
+                    unavailableSeatList.add(sb.toString());
+                    seatInfo.setStatus(SeatStatusEnum.UNAVAILABLE.name());
+                }
+            }
+            if (seatInfoMap.containsKey(seatInfo.getSeatRow())) {
+                seatInfoMap.get(seatInfo.getSeatRow()).put(seatInfo.getSeatColumn(), seatInfo);
+            } else {
+                Map<Integer, SeatInfo> tmpMap = new HashMap<>();
+                tmpMap.put(seatInfo.getSeatColumn(), seatInfo);
+                seatInfoMap.put(seatInfo.getSeatRow(), tmpMap);
+            }
+        }
+        //空位用空实体占位
+        List<String> stringList = new ArrayList<>();
+        for (Integer i = 1; i < SeatConst.ROW_COUNT + 1; i++) {
+            Map<Integer, SeatInfo> map = seatInfoMap.get(i);
+            Map<Integer, SeatInfo> tempMap = new HashMap<>();
+            StringBuffer sb = new StringBuffer();
+            if (map == null) {
+                for (Integer j = 1; j < SeatConst.COL_COUNT + 1; j++) {
+                    tempMap.put(j, new SeatInfo());
+                    sb.append(PASSAGE_MARK);
+                }
+            } else {
+                for (Integer j = 1; j < SeatConst.COL_COUNT + 1; j++) {
+                    if (map.get(j) == null) {
+                        tempMap.put(j, new SeatInfo());
+                        sb.append(PASSAGE_MARK);
+                    } else {
+                        tempMap.put(j, map.get(j));
+                        sb.append(SEAT_MARK);
+                    }
+                }
+            }
+            seatInfoMap.put(i, tempMap);
+            stringList.add(sb.toString());
+        }
+        return new ExtraResponse(new SeatChartVO(stringList, unavailableSeatList));
+    }
+
+    @Override
+    public Object getArrangementDetail(Integer arrangementId) {
+        FilmArrangement filmArrangement = filmArrangementMapper.selectById(arrangementId);
+        return new ExtraResponse(filmArrangement);
     }
 }

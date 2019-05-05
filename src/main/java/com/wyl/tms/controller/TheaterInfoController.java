@@ -54,8 +54,8 @@ public class TheaterInfoController {
      * 根据电影id,查看影厅信息
      */
     @GetMapping("/hall/{id}/list")
-    public Object getHallByFilmId(@PathVariable(name = "id") Integer filmId) {
-        return theaterInfoService.getHallByFilmId(filmId);
+    public Object getFilmHallList(@PathVariable(name = "id") Integer filmId, String date) {
+        return theaterInfoService.getFilmHallList(filmId, date);
     }
 
     /**
@@ -65,5 +65,22 @@ public class TheaterInfoController {
     public Object getTheaterDetail(@PathVariable(name = "id") Integer theaterId) {
         return theaterInfoService.getTheaterDetail(theaterId);
 
+    }
+
+    /**
+     * 获取影厅座位数据
+     */
+    @GetMapping("/arrangement/hall/seat")
+    public Object getArrangementHallSeat(@RequestParam("arrangement_id") Integer arrangementId,
+                                         @RequestParam("hall_id") Integer hallId) {
+        return theaterInfoService.getArrangementHallSeat(arrangementId, hallId);
+    }
+
+    /**
+     * 获取影厅座位数据
+     */
+    @GetMapping("/arrangement/{id}/detail")
+    public Object getArrangementDetail(@PathVariable("id") Integer arrangementId) {
+        return theaterInfoService.getArrangementDetail(arrangementId);
     }
 }

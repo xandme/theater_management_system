@@ -22,9 +22,25 @@ public class FilmInfoController {
      * 查看电影信息列表
      */
     @GetMapping("/list")
-    public Object getFileList(@RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
+    public Object getList(@RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
                           @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
-                              @RequestParam(name = "status",required = false, defaultValue = "1") Integer status){
-        return filmInfoService.getList(pageNo,pageSize,status);
+                          @RequestParam(name = "status", required = false, defaultValue = "1") Integer status) {
+        return filmInfoService.getList(pageNo, pageSize, status);
+    }
+
+    @GetMapping("/order/list")
+    public Object getOrderList(@RequestHeader(value = "userId", defaultValue = "1") Integer userId,
+                               @RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
+                               @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
+                               @RequestParam(name = "status", required = false, defaultValue = "1") Integer status) {
+        return filmInfoService.getOrderList(userId, pageNo, pageSize, status);
+    }
+
+    /**
+     * 查看电影详情
+     */
+    @GetMapping("/{id}/detail")
+    public Object getFilmDetail(@PathVariable("id") Integer id) {
+        return filmInfoService.getFilmDetail(id);
     }
 }
