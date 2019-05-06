@@ -1,5 +1,8 @@
 package com.wyl.tms.model;
 
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
+
 public class MemberType {
     /**
      *
@@ -8,6 +11,7 @@ public class MemberType {
      *
      * @mbg.generated Wed Apr 10 11:04:15 CST 2019
      */
+    @TableId(value = "member_type_id", type = IdType.AUTO)
     private Boolean memberTypeId;
 
     /**

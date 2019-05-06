@@ -21,6 +21,6 @@ public interface FilmArrangementMapper extends BaseMapper<FilmArrangement> {
 
     @Select("SELECT a.*,h.* FROM film_arrangement a \n" +
             "LEFT JOIN film_hall_info h ON a.`film_hall_number` = h.`film_hall_number` \n" +
-            "WHERE film_id = #{filmId} AND DATE = '${date}'")
+            "WHERE film_id = #{filmId} AND DATE = '${date}' ORDER BY a.time")
     List<FilmHallVO> selectFilmHall(@Param("filmId") Integer filmId, @Param("date") String date);
 }

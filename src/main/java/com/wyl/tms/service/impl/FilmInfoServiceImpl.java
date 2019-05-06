@@ -10,9 +10,11 @@ import com.wyl.tms.model.FilmInfo;
 import com.wyl.tms.model.UserFilmOrder;
 import com.wyl.tms.model.UserGoodsOrder;
 import com.wyl.tms.service.FilmInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +33,15 @@ public class FilmInfoServiceImpl extends ServiceImpl<FilmInfoMapper, FilmInfo> i
 
 
     @Override
-    public Object getList(Integer pageNo, Integer pageSize, Integer status) {
+    public Object getList(Integer pageNo, Integer pageSize, Integer status, String key) {
         Page<FilmInfo> page = new Page<>(pageNo - 1, pageSize);
-        List<FilmInfo> filmInfoList = filmInfoMapper.findPage(status, page);
+        List<FilmInfo> filmInfoList = new ArrayList<>();
+        if (status == null && StringUtils.isNotBlank(key)) {
+            key = "%" + key + "%";
+            filmInfoList = filmInfoMapper.findPageByName(key, page);
+        } else {
+            filmInfoList = filmInfoMapper.findPage(status, page);
+        }
         DataList dataList = new DataList(page.getCurrent(), (int) page.getPages(), page.getSize(), (int) page.getTotal(), filmInfoList);
         return new ExtraResponse(dataList);
     }

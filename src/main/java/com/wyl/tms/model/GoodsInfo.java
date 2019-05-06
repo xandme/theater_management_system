@@ -11,7 +11,7 @@ public class GoodsInfo {
      *
      * @mbg.generated Wed Apr 10 11:04:15 CST 2019
      */
-    @TableId(value = "film_id", type = IdType.AUTO)
+    @TableId(value = "goods_id", type = IdType.AUTO)
     private Integer goodsId;
 
     /**
