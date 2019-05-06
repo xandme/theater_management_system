@@ -24,8 +24,9 @@ public class FilmInfoController {
     @GetMapping("/list")
     public Object getList(@RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
                           @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
-                          @RequestParam(name = "status", required = false, defaultValue = "1") Integer status) {
-        return filmInfoService.getList(pageNo, pageSize, status);
+                          @RequestParam(name = "status", required = false) Integer status,
+                          @RequestParam(name = "key", required = false) String key) {
+        return filmInfoService.getList(pageNo, pageSize, status, key);
     }
 
     @GetMapping("/order/list")
@@ -43,4 +44,5 @@ public class FilmInfoController {
     public Object getFilmDetail(@PathVariable("id") Integer id) {
         return filmInfoService.getFilmDetail(id);
     }
+
 }

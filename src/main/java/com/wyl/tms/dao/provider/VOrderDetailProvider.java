@@ -16,7 +16,7 @@ public class VOrderDetailProvider {
                 if (status != null) {
                     WHERE("order_status = #{status}");
                 }
-                ORDER_BY("created_time");
+                ORDER_BY("created_time DESC");
             }
         }.toString();
     }
