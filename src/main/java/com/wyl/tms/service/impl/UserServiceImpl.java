@@ -1,6 +1,7 @@
 package com.wyl.tms.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.wyl.tms.common.ExtraResponse;
 import com.wyl.tms.dao.UserMapper;
 import com.wyl.tms.model.User;
 import com.wyl.tms.service.UserService;
@@ -21,6 +22,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         this.userMapper = userMapper;
     }
 
+    @Override
+    public Object getUserInfoOne(Integer userId) {
+        try {
+            User user = userMapper.selectById(userId);
+            return new ExtraResponse(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    return null;
+    }
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 //        log.info("用户名：" + username);
