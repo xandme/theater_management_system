@@ -33,7 +33,7 @@ public class FilmInfoServiceImpl extends ServiceImpl<FilmInfoMapper, FilmInfo> i
 
 
     @Override
-    public Object getList(Integer pageNo, Integer pageSize, Integer status, String key) {
+    public Object getList(Integer pageNo, Integer pageSize, Integer status, String key, Integer theaterId) {
         Page<FilmInfo> page = new Page<>(pageNo - 1, pageSize);
         List<FilmInfo> filmInfoList = new ArrayList<>();
         if (status == null && StringUtils.isNotBlank(key)) {

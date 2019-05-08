@@ -16,4 +16,10 @@ public interface FilmInfoMapper extends BaseMapper<FilmInfo> {
 
     @Select("SELECT * FROM film_info WHERE is_enabled = 1 AND film_name like #{key}")
     List<FilmInfo> findPageByName(@Param("key") String key, Page<FilmInfo> page);
+
+    @Select("SELECT * FROM film_info WHERE is_enabled = 1 AND film_name like #{key} AND theater_id = #{theaterId}")
+    List<FilmInfo> findPageByNameAndTheaterId(@Param("key")String key, @Param("theaterId")Integer theaterId, Page<FilmInfo> page);
+
+    @Select("SELECT * FROM film_info WHERE is_enabled = 1 AND film_status = #{status} AND theater_id = #{theaterId}")
+    List<FilmInfo> findPageByTheaterId(@Param("status")Integer status, @Param("theaterId")Integer theaterId, Page<FilmInfo> page);
 }

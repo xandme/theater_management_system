@@ -1,8 +1,11 @@
 package com.wyl.tms.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+import com.wyl.tms.common.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.imageio.ImageIO;
@@ -20,37 +23,37 @@ public class appController {
     DefaultKaptcha defaultKaptcha;
 
     @RequestMapping("/index")
-    public  String index(){
+    public String index() {
         return "/home/index";
     }
 
     @RequestMapping("/market")
-    public  String market(){
+    public String market() {
         return "/market/market";
     }
 
     @RequestMapping("/personal")
-    public  String personal(){
+    public String personal() {
         return "/personal/personal";
     }
 
     @RequestMapping("/setting")
-    public  String setting(){
+    public String setting() {
         return "/personal/setting";
     }
 
     @RequestMapping("/personInfo")
-    public  String personInfo(){
+    public String personInfo() {
         return "/personal/personInfo";
     }
 
     @RequestMapping("/member")
-    public  String member(){
+    public String member() {
         return "/personal/member";
     }
 
     @RequestMapping("/memberDetail")
-    public  String memberDetail(){
+    public String memberDetail() {
         return "/personal/memberDetail";
     }
 
@@ -60,7 +63,7 @@ public class appController {
     }
 
     @RequestMapping("/theaterList")
-    public  String theaterList(){
+    public String theaterList() {
         return "/common/theaterList";
     }
 
@@ -75,7 +78,7 @@ public class appController {
     }
 
     @RequestMapping("/defaultKaptcha")
-    public void defaultKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception{
+    public void defaultKaptcha(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
         byte[] captchaChallengeAsJpeg = null;
         ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
         try {
@@ -101,6 +104,12 @@ public class appController {
         responseOutputStream.write(captchaChallengeAsJpeg);
         responseOutputStream.flush();
         responseOutputStream.close();
+    }
+
+    @PostMapping("/realdata/{sn}")
+    public Object realdata(@PathVariable("sn") String sn) {
+        System.out.println("上传实时数据：" + sn);
+        return BaseResponse.SUCCESS;
     }
 }
 

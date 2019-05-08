@@ -17,6 +17,15 @@ public class TheaterInfoController {
         this.theaterInfoService = theaterInfoService;
     }
 
+
+    /**
+     * 返回影院信息
+     */
+    @GetMapping("/default")
+    public Object TheaterDefault(@RequestParam(value = "id", required = false) Integer theaterId) {
+        return theaterInfoService.getDefault(theaterId);
+    }
+
     /**
      * 查看影院信息列表
      */
@@ -54,8 +63,9 @@ public class TheaterInfoController {
      * 根据电影id,查看影厅信息
      */
     @GetMapping("/hall/{id}/list")
-    public Object getFilmHallList(@PathVariable(name = "id") Integer filmId, String date) {
-        return theaterInfoService.getFilmHallList(filmId, date);
+    public Object getFilmHallList(@PathVariable(name = "id") Integer filmId,
+                                  @RequestParam(name = "theater_id") Integer theaterId, String date) {
+        return theaterInfoService.getFilmHallList(filmId, theaterId, date);
     }
 
     /**

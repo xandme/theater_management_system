@@ -16,11 +16,21 @@ public interface FilmArrangementMapper extends BaseMapper<FilmArrangement> {
     @Select("SELECT * FROM film_arrangement WHERE film_id = #{filmId}")
     List<FilmArrangement> findPage(@Param("filmId") Integer filmId, Page<FilmArrangement> page);
 
-    @Select("SELECT DISTINCT date FROM film_arrangement WHERE film_id = #{filmId}")
-    List<Date> selectDistinctDate(@Param("filmId") Integer filmId);
+
+    @Select("SELECT * FROM film_arrangement a\n" +
+            "LEFT JOIN film_hall_info h ON a.`film_hall_number` =  h.`film_hall_number`\n" +
+            "WHERE h.`theater_id` = #{theaterId} and bh.`film_id` = #{filmId}")
+    List<FilmArrangement> findPageByTheaterId(@Param("filmId") Integer filmId, @Param("theaterId") Integer theaterId, Page<FilmArrangement> page);
+
+
+    @Select("SELECT DISTINCT DATE FROM film_arrangement a\n" +
+            "LEFT JOIN film_hall_info h ON a.`film_hall_number`=h.`film_hall_number`\n" +
+            "WHERE a.film_id = #{filmId} \n" +
+            "AND h.`theater_id` = #{theaterId}")
+    List<Date> selectDistinctDate(@Param("filmId") Integer filmId,@Param("theaterId") Integer theaterId);
 
     @Select("SELECT a.*,h.* FROM film_arrangement a \n" +
             "LEFT JOIN film_hall_info h ON a.`film_hall_number` = h.`film_hall_number` \n" +
-            "WHERE film_id = #{filmId} AND DATE = '${date}' ORDER BY a.time")
-    List<FilmHallVO> selectFilmHall(@Param("filmId") Integer filmId, @Param("date") String date);
+            "WHERE a.film_id = #{filmId} AND a.DATE = '${date}' AND h.theater_id = #{theaterId} ORDER BY a.time")
+    List<FilmHallVO> selectFilmHall(@Param("filmId") Integer filmId, @Param("theaterId") Integer theaterId, @Param("date") String date);
 }

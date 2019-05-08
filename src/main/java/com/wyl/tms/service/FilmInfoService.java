@@ -7,7 +7,7 @@ import com.wyl.tms.model.FilmInfo;
  * Created by Yhw on 2019-04-22
  */
 public interface FilmInfoService extends IService<FilmInfo> {
-    Object getList(Integer pageNo, Integer pageSize, Integer status, String key);
+    Object getList(Integer pageNo, Integer pageSize, Integer status, String key, Integer theaterId);
 
     Object getOrderList(Integer userId, Integer pageNo, Integer pageSize, Integer status);
 

@@ -3,10 +3,7 @@ package com.wyl.tms.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.wyl.tms.common.DataList;
-import com.wyl.tms.common.ExtraResponse;
-import com.wyl.tms.common.SeatConst;
-import com.wyl.tms.common.SeatStatusEnum;
+import com.wyl.tms.common.*;
 import com.wyl.tms.dao.*;
 import com.wyl.tms.model.FilmArrangement;
 import com.wyl.tms.model.SeatInfo;
@@ -18,7 +15,6 @@ import com.wyl.tms.vo.FilmHallVO;
 import com.wyl.tms.vo.SeatChartVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -58,14 +54,14 @@ public class TheaterInfoServiceImpl extends ServiceImpl<TheaterInfoMapper, Theat
     @Override
     public Object getArrangementList(Integer pageNo, Integer pageSize, Integer theaterId, Integer filmId) {
         Page<FilmArrangement> page = new Page<>(pageNo - 1, pageSize);
-        List<FilmArrangement> filmArrangementList = filmArrangementMapper.findPage(filmId, page);
+        List<FilmArrangement> filmArrangementList = filmArrangementMapper.findPageByTheaterId(filmId, theaterId, page);
         DataList dataList = new DataList(page.getCurrent(), (int) page.getPages(), page.getSize(), (int) page.getTotal(), filmArrangementList);
         return new ExtraResponse(dataList);
     }
 
     @Override
     public Object getArrangementDate(Integer pageNo, Integer pageSize, Integer theaterId, Integer filmId) {
-        List<Date> dateList = filmArrangementMapper.selectDistinctDate(filmId);
+        List<Date> dateList = filmArrangementMapper.selectDistinctDate(filmId, theaterId);
         List<ArrangementDateVO> dateVOList = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("M月d日");
         SimpleDateFormat sdf1 = new SimpleDateFormat("YYYY-MM-dd");
@@ -85,8 +81,8 @@ public class TheaterInfoServiceImpl extends ServiceImpl<TheaterInfoMapper, Theat
     }
 
     @Override
-    public Object getFilmHallList(Integer filmId, String date) {
-        List<FilmHallVO> filmHallVOList = filmArrangementMapper.selectFilmHall(filmId, date);
+    public Object getFilmHallList(Integer filmId, Integer theaterId, String date) {
+        List<FilmHallVO> filmHallVOList = filmArrangementMapper.selectFilmHall(filmId, theaterId, date);
         return new ExtraResponse(filmHallVOList);
     }
 
@@ -158,5 +154,18 @@ public class TheaterInfoServiceImpl extends ServiceImpl<TheaterInfoMapper, Theat
     public Object getArrangementDetail(Integer arrangementId) {
         FilmArrangement filmArrangement = filmArrangementMapper.selectById(arrangementId);
         return new ExtraResponse(filmArrangement);
+    }
+
+    @Override
+    public Object getDefault(Integer theaterId) {
+        if (Objects.isNull(theaterId)) {
+            List<TheaterInfo> theaterInfoList = theaterInfoMapper.selectList(new EntityWrapper<>());
+            if (theaterInfoList.size() > 0) {
+                return new ExtraResponse(theaterInfoList.get(0));
+            }
+            return BaseResponse.CODE_FAIL;
+        } else {
+            return new ExtraResponse(theaterInfoMapper.selectById(theaterId));
+        }
     }
 }
