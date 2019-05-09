@@ -2,8 +2,7 @@ package com.wyl.tms.service;
 
 import com.baomidou.mybatisplus.service.IService;
 import com.wyl.tms.model.User;
-
-import java.util.Map;
+import com.wyl.tms.vo.LoginVO;
 
 /**
  * Created by Yhw on 2019-04-27
@@ -11,5 +10,5 @@ import java.util.Map;
 public interface UserService extends IService<User> {
     Object getUserInfoOne(Integer userId);
 
-    Object login(Map map);
+    Object login(LoginVO map);
 }

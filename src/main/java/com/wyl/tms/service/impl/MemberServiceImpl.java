@@ -2,6 +2,7 @@ package com.wyl.tms.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.wyl.tms.common.BaseResponse;
 import com.wyl.tms.common.ExtraResponse;
 import com.wyl.tms.dao.MemberInfoMapper;
 import com.wyl.tms.model.MemberInfo;
@@ -35,5 +36,11 @@ public class MemberServiceImpl extends ServiceImpl<MemberInfoMapper, MemberInfo>
     public Object getDetail(Integer memberId) {
         MemberInfo memberInfo = memberInfoMapper.selectById(memberId);
         return new ExtraResponse(memberInfo);
+    }
+
+    @Override
+    public Object addMember(MemberInfo memberInfo) {
+        memberInfoMapper.insert(memberInfo);
+        return BaseResponse.SUCCESS;
     }
 }

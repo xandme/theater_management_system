@@ -80,6 +80,16 @@ public class OrderInfoServiceImpl implements OrderInfoService {
             situation.setSeatId(seatInfo.getSeatId());
             situationMapper.insert(situation);
         }
-        return BaseResponse.SUCCESS;
+        return new ExtraResponse(userFilmOrder.getFilmOrderId());
+    }
+
+    @Override
+    public Object getDetail(Integer id) {
+        UserFilmOrder userFilmOrder = userFilmOrderMapper.selectById(id);
+        EntityWrapper entityWrapper = new EntityWrapper();
+        entityWrapper.eq("order_id", userFilmOrder.getFilmOrderId());
+        List<UserFilmOrderDetail> userFilmOrderDetailList = userFilmOrderDetailMapper.selectList(entityWrapper);
+        userFilmOrder.setDetailList(userFilmOrderDetailList);
+        return new ExtraResponse(userFilmOrder);
     }
 }

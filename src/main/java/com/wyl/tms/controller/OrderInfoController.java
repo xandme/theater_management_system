@@ -37,4 +37,12 @@ public class OrderInfoController {
                               @RequestBody ConfirmSeatVO confirmSeatVO) {
         return orderInfoService.confirmSeat(userId,confirmSeatVO);
     }
+
+    /**
+     * 获取订单详情
+     */
+    @GetMapping("/{id}/detail")
+    public Object getDetail(@PathVariable("id")Integer id){
+        return orderInfoService.getDetail(id);
+    }
 }

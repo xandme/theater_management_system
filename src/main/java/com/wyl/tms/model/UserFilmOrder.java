@@ -1,10 +1,12 @@
 package com.wyl.tms.model;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class UserFilmOrder {
@@ -52,4 +54,7 @@ public class UserFilmOrder {
     private Double orderAmount;
 
     private Integer ticketQuantity;
+
+    @TableField(exist = false)
+    private List<UserFilmOrderDetail> detailList;
 }

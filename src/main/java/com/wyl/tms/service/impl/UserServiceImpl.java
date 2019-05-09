@@ -1,20 +1,20 @@
 package com.wyl.tms.service.impl;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.wyl.tms.common.BaseResponse;
 import com.wyl.tms.common.ExtraResponse;
 import com.wyl.tms.dao.UserMapper;
-import com.wyl.tms.exception.RException;
 import com.wyl.tms.model.User;
 import com.wyl.tms.service.UserService;
 import com.wyl.tms.util.CodeUtils;
+import com.wyl.tms.vo.LoginVO;
 import com.wyl.tms.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -42,15 +42,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public Object login(Map map) {
-        String username = (String) map.get("username");
-        String password = (String) map.get("password");
+    public Object login(LoginVO map) {
         try {
-            String md5Passord = CodeUtils.md5Hex(password);
-            User user = userMapper.findByName(username);
+            String md5Passord = CodeUtils.md5Hex(map.getPassword());
+//            User user = userMapper.findByName(map.getUsername());
+            User user = userMapper.findByTelephone(map.getUsername());
             if (md5Passord.equals(user.getPassword())) {
                 UserVO userVO = new UserVO();
                 BeanUtils.copyProperties(user, userVO);
+                userVO.setHeadPhotoUrl(user.getHeadPhotoURL());
                 UserVO.Security security = new UserVO.Security(UUID.randomUUID().toString().replace("-", ""), 30);
                 userVO.setSecurity(security);
                 return new ExtraResponse(userVO);

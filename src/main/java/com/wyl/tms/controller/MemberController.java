@@ -1,5 +1,6 @@
 package com.wyl.tms.controller;
 
+import com.wyl.tms.model.MemberInfo;
 import com.wyl.tms.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,10 @@ public class MemberController {
     @GetMapping("/{id}/detail")
     public Object getDetail(@PathVariable("id") Integer memberId) {
         return memberService.getDetail(memberId);
+    }
+
+    @PostMapping("/add")
+    public Object addMember(@RequestBody MemberInfo memberInfo){
+        return memberService.addMember(memberInfo);
     }
 }

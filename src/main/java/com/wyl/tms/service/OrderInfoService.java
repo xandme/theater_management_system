@@ -9,4 +9,6 @@ public interface OrderInfoService {
     Object getFilmOrderList(Integer pageNo, Integer pageSize, Integer status, Integer userId);
 
     Object confirmSeat(Integer userId, ConfirmSeatVO confirmSeatVO);
+
+    Object getDetail(Integer id);
 }

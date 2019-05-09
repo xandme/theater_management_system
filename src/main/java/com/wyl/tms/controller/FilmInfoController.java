@@ -25,7 +25,7 @@ public class FilmInfoController {
     public Object getList(@RequestParam(name = "page_no", required = false, defaultValue = "1") Integer pageNo,
                           @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
                           @RequestParam(name = "status", required = false) Integer status,
-                          @RequestParam(name = "theater_id") Integer theaterId,
+                          @RequestParam(name = "theater_id", required = false) Integer theaterId,
                           @RequestParam(name = "key", required = false) String key) {
         return filmInfoService.getList(pageNo, pageSize, status, key, theaterId);
     }

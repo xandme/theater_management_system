@@ -1,6 +1,7 @@
 package com.wyl.tms.controller;
 
 import com.wyl.tms.service.UserService;
+import com.wyl.tms.vo.LoginVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ public class LoginController {
     UserService userService;
 
     @PostMapping("/diy/login")
-    public Object login(@RequestBody Map map) {
-        return userService.login(map);
+    public Object login(@RequestBody LoginVO login) {
+        return userService.login(login);
     }
 }
