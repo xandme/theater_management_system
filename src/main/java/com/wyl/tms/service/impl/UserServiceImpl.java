@@ -1,13 +1,21 @@
 package com.wyl.tms.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.wyl.tms.common.BaseResponse;
 import com.wyl.tms.common.ExtraResponse;
 import com.wyl.tms.dao.UserMapper;
+import com.wyl.tms.exception.RException;
 import com.wyl.tms.model.User;
 import com.wyl.tms.service.UserService;
+import com.wyl.tms.util.CodeUtils;
+import com.wyl.tms.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by Yhw on 2019-04-26
@@ -30,8 +38,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         } catch (Exception e) {
             e.printStackTrace();
         }
-    return null;
+        return null;
     }
+
+    @Override
+    public Object login(Map map) {
+        String username = (String) map.get("username");
+        String password = (String) map.get("password");
+        try {
+            String md5Passord = CodeUtils.md5Hex(password);
+            User user = userMapper.findByName(username);
+            if (md5Passord.equals(user.getPassword())) {
+                UserVO userVO = new UserVO();
+                BeanUtils.copyProperties(user, userVO);
+                UserVO.Security security = new UserVO.Security(UUID.randomUUID().toString().replace("-", ""), 30);
+                userVO.setSecurity(security);
+                return new ExtraResponse(userVO);
+            } else {
+                return new BaseResponse(1001, "用户名或密码错误");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) throws Exception {
+        System.out.println(CodeUtils.md5Hex("123456"));
+    }
+
 //    @Override
 //    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 //        log.info("用户名：" + username);
