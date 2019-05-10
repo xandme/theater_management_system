@@ -39,7 +39,9 @@ public class MemberServiceImpl extends ServiceImpl<MemberInfoMapper, MemberInfo>
     }
 
     @Override
-    public Object addMember(MemberInfo memberInfo) {
+    public Object addMember(Integer userId, MemberInfo memberInfo) {
+        memberInfo.setUserId(userId);
+        memberInfo.setBalance(new Double(1000));
         memberInfoMapper.insert(memberInfo);
         return BaseResponse.SUCCESS;
     }

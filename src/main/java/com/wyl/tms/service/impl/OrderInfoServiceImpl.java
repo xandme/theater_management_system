@@ -92,4 +92,12 @@ public class OrderInfoServiceImpl implements OrderInfoService {
         userFilmOrder.setDetailList(userFilmOrderDetailList);
         return new ExtraResponse(userFilmOrder);
     }
+
+    @Override
+    public Object confirmOrder(Integer id) {
+        UserFilmOrder order = userFilmOrderMapper.selectById(id);
+        order.setOrderStatus(OrderStatusEnum.PAYED.getCode());
+        userFilmOrderMapper.updateById(order);
+        return BaseResponse.SUCCESS;
+    }
 }

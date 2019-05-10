@@ -11,5 +11,5 @@ public interface MemberService extends IService<MemberInfo> {
 
     Object getDetail(Integer memberId);
 
-    Object addMember(MemberInfo memberInfo);
+    Object addMember(Integer userId, MemberInfo memberInfo);
 }

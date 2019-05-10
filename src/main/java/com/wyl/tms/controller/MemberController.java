@@ -29,7 +29,8 @@ public class MemberController {
     }
 
     @PostMapping("/add")
-    public Object addMember(@RequestBody MemberInfo memberInfo){
-        return memberService.addMember(memberInfo);
+    public Object addMember(@RequestHeader(value = "user_id", defaultValue = "1") Integer userId,
+                            @RequestBody MemberInfo memberInfo) {
+        return memberService.addMember(userId, memberInfo);
     }
 }

@@ -45,4 +45,12 @@ public class OrderInfoController {
     public Object getDetail(@PathVariable("id")Integer id){
         return orderInfoService.getDetail(id);
     }
+
+    /**
+     * 确认付款
+     */
+    @GetMapping("/{id}/confirm")
+    public Object confirmOrder(@PathVariable("id")Integer id){
+        return orderInfoService.confirmOrder(id);
+    }
 }

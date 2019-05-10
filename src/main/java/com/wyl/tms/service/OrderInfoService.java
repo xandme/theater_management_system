@@ -11,4 +11,6 @@ public interface OrderInfoService {
     Object confirmSeat(Integer userId, ConfirmSeatVO confirmSeatVO);
 
     Object getDetail(Integer id);
+
+    Object confirmOrder(Integer id);
 }
